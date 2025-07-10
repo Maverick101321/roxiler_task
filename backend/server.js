@@ -8,6 +8,10 @@ dotenv.config();
 // confirm the connection status when the server starts.
 require('./config/db');
 
+// Route files
+const authRoutes = require('./routes/auth');
+const storeRoutes = require('./routes/stores');
+
 const app = express();
 
 // Middleware to parse JSON bodies
@@ -17,6 +21,10 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('API is running...');
 });
+
+// Mount routers
+app.use('/api/auth', authRoutes);
+app.use('/api/stores', storeRoutes);
 
 const PORT = process.env.PORT || 5001;
 
