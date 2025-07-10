@@ -1,0 +1,42 @@
+-- Create Database
+CREATE DATABASE IF NOT EXISTS task;
+
+-- Use the database
+USE task;
+
+-- Users table
+CREATE TABLE Users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(60) NOT NULL CHECK (LENGTH(name) >= 3 AND LENGTH(name) <= 60),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    address VARCHAR(400) NOT NULL,
+    role ENUM('admin', 'normal', 'store_owner') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Stores table
+CREATE TABLE Stores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(60) NOT NULL CHECK (LENGTH(name) >= 3 AND LENGTH(name) <= 60),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    address VARCHAR(400) NOT NULL,
+    owner_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (owner_id) REFERENCES Users(id) ON DELETE SET NULL
+);
+
+-- Ratings table
+CREATE TABLE Ratings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    store_id INT NOT NULL,
+    rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (store_id) REFERENCES Stores(id) ON DELETE CASCADE,
+    UNIQUE (user_id, store_id)
+);
