@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
-import authService from '../services/authService';
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 const LoginPage = () => {
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -13,9 +16,9 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const data = await authService.login(email, password);
-      console.log('Login successful, token:', data.token);
-      // In the next steps, we will save this token and redirect the user
+      await login(email, password);
+      console.log('Login successful, redirecting...');
+      navigate('/'); // Redirect to the homepage
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'An error occurred during login.';
       setError(errorMessage);
