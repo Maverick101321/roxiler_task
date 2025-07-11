@@ -5,7 +5,15 @@ const db = require('../config/db');
 // @access  Public
 exports.getStores = async (req, res, next) => {
     try {
-        const [stores] = await db.query('SELECT * FROM Stores');
+        const query = `
+            SELECT
+                s.*,
+                ROUND(AVG(r.rating), 1) as average_rating
+            FROM Stores s
+            LEFT JOIN Ratings r ON s.id = r.store_id
+            GROUP BY s.id
+        `;
+        const [stores] = await db.query(query);
         res.status(200).json({ success: true, count: stores.length, data: stores });
     } catch (error) {
         console.error(error);
@@ -18,7 +26,16 @@ exports.getStores = async (req, res, next) => {
 // @access  Public
 exports.getStore = async (req, res, next) => {
     try {
-        const [stores] = await db.query('SELECT * FROM Stores WHERE id = ?', [req.params.id]);
+        const query = `
+            SELECT
+                s.*,
+                ROUND(AVG(r.rating), 1) as average_rating
+            FROM Stores s
+            LEFT JOIN Ratings r ON s.id = r.store_id
+            WHERE s.id = ?
+            GROUP BY s.id
+        `;
+        const [stores] = await db.query(query, [req.params.id]);
         if (stores.length === 0) {
             return res.status(404).json({ success: false, message: `Store not found with id of ${req.params.id}` });
         }
