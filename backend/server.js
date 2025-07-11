@@ -1,5 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const helmet = require('helmet');
+const cors = require('cors');
 
 // Load env vars
 dotenv.config();
@@ -12,10 +14,19 @@ require('./config/db');
 const authRoutes = require('./routes/auth');
 const storeRoutes = require('./routes/stores');
 
+// Middleware
+const errorHandler = require('./middleware/error');
+
 const app = express();
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+
+// Set security headers
+app.use(helmet());
+
+// Enable CORS
+app.use(cors());
 
 // A simple test route to make sure the server is reachable
 app.get('/', (req, res) => {
@@ -25,6 +36,8 @@ app.get('/', (req, res) => {
 // Mount routers
 app.use('/api/auth', authRoutes);
 app.use('/api/stores', storeRoutes);
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5001;
 
