@@ -49,9 +49,4 @@ A web application for users to rate stores, with role-based functionalities for 
   - `controllers/`: Request handlers
   - `models/`: Database queries
 - `schema.sql`: MySQL database schema
-- `frontend/`: React frontend (to be implemented)
-
-## Next Steps
-- Implement authentication routes (signup, login).
-- Develop role-based API endpoints.
-- Set up React frontend.
+- `frontend/`: React frontend 
