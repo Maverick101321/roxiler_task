@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import storeService from '../services/storeService';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 const StoresListPage = () => {
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchStores = async () => {
@@ -29,7 +31,14 @@ const StoresListPage = () => {
 
   return (
     <div style={{ maxWidth: '800px', margin: '2rem auto' }}>
-      <h1>Available Stores</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <h1>Available Stores</h1>
+        {user && (user.role === 'admin' || user.role === 'store_owner') && (
+          <Link to="/create-store" style={{ padding: '10px 15px', backgroundColor: '#28a745', color: 'white', textDecoration: 'none', borderRadius: '5px' }}>
+            + Create Store
+          </Link>
+        )}
+      </div>
       {stores.length === 0 ? (
         <p>No stores have been added yet.</p>
       ) : (
